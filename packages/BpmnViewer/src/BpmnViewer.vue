@@ -99,7 +99,7 @@ export default {
         this.overlays.add(element.id, {
           position: {
             bottom: 17,
-            left: -8,
+            left: -10,
           },
           html: `<div><span class="badge">8</span></div>`,
         });
@@ -325,7 +325,7 @@ export default {
   color: #143d52;
   display: inline-block;
   min-width: 10px;
-  padding: 3px 7px;
+  padding: 3px 6px;
   font-size: 12px;
   font-weight: bold;
   line-height: 1;
@@ -333,5 +333,6 @@ export default {
   white-space: nowrap;
   vertical-align: middle;
   border-radius: 10px;
+  cursor: pointer;
 }
 </style>
