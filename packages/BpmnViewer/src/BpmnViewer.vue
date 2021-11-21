@@ -28,6 +28,7 @@ export default {
   data() {
     return {
       taskList: [],
+      bpmnViewerInfo: null,
     };
   },
   async mounted() {
@@ -36,6 +37,7 @@ export default {
       container: this.$refs["canvas"],
       bpmnRenderer: {},
     });
+    this.bpmnViewerInfo = bpmnViewer;
     try {
       await bpmnViewer.importXML(this.xmlData);
       this.initArrow("sequenceflow-arrow-complete");
@@ -75,6 +77,8 @@ export default {
       svgAppend(defs, marker);
     },
     setBpmnViewStyle(element, canvas) {
+      this.overlays = this.bpmnViewerInfo.get("overlays");
+      console.log("---view-------", this.overlays);
       // 设置当前节点样式
       this.setViewDefaultInfo(element, canvas);
       this.setViewScopeCompleteInfo(element, canvas);
@@ -89,11 +93,24 @@ export default {
         });
       }
     },
+    createOverlayNodes(element, data) {
+      const type = element["$type"];
+      if (type == "bpmn:UserTask") {
+        this.overlays.add(element.id, {
+          position: {
+            bottom: 17,
+            left: -8,
+          },
+          html: `<div><span class="badge">8</span></div>`,
+        });
+      }
+    },
     setViewDefaultInfo(element, canvas) {
       let taskInfo = this.taskList.find(
         (task) =>
           task.activityId === element.id && task.activityInstanceState == 0
       );
+      this.createOverlayNodes(element, null);
       if (taskInfo) {
         canvas.addMarker(element.id, "highlight-todo");
       }
@@ -292,5 +309,29 @@ export default {
   to {
     stroke-dashoffset: -1000;
   }
+}
+.instances-overlay {
+  width: max-content;
+}
+
+.instance-count {
+  cursor: pointer;
+}
+/deep/.badge {
+  border-width: 1px;
+  border-style: solid;
+  background-color: #70b8db;
+  border-color: #143d52;
+  color: #143d52;
+  display: inline-block;
+  min-width: 10px;
+  padding: 3px 7px;
+  font-size: 12px;
+  font-weight: bold;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  border-radius: 10px;
 }
 </style>
